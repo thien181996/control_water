@@ -45,6 +45,7 @@ class ItemController extends Controller
             $item->distance = $distance;
             $item->water_status = $water_status;
             $item->save();
+//            dd($item);
         } else {
             $item = Item::create([
                 'distance_max' => 0,
@@ -76,11 +77,6 @@ class ItemController extends Controller
                         $item->pump_status = self::PUMP_ON;
                         $item->save();
                         return response()->json(self::PUMP_ON, 200);
-                        break;
-                    case self::TANK_UNFULL:
-                        $item->pump_status = self::PUMP_OFF;
-                        $item->save();
-                        return response()->json(self::PUMP_OFF, 200);
                         break;
                     case self::TANK_FULL:
                         $item->pump_status = self::PUMP_OFF;
