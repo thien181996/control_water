@@ -18,5 +18,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('/control/{serial}', 'ItemController@getItem');
-Route::post('/control/', 'ItemController@storeItem');
+Route::get('/control/', 'ItemController@storeItem');
 
