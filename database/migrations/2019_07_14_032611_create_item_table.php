@@ -16,7 +16,10 @@ class CreateItemTable extends Migration
         Schema::create('items', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('serial', 191);
+            $table->integer('distance_max');
+            $table->integer('distance_min');
             $table->integer('distance');
+            $table->integer('water_status');
             $table->integer('status')->default(0);
             $table->timestamps();
         });
