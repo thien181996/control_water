@@ -19,8 +19,10 @@ class CreateItemTable extends Migration
             $table->integer('distance_max');
             $table->integer('distance_min');
             $table->integer('distance');
-            $table->integer('water_status');
-            $table->integer('status')->default(0);
+            $table->integer('water_status')->default(0);
+            $table->integer('pump_status')->default(0);
+            $table->integer('auto_status')->default(0);
+            $table->integer('tank_status')->default(0);
             $table->timestamps();
         });
     }
