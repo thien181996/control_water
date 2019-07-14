@@ -58,20 +58,29 @@ class ItemController extends Controller
         $distance_max = $item->distance_max;
         $distance_min = $item->distance_min;
         $tank_status = null;
-        switch ($distance)
-        {
-            case $distance <= $distance_min:
-                $tank_status = self::TANK_FULL;
-                break;
-            case $distance >= $distance_max:
-                $tank_status = self::TANK_EMPTY;
-                break;
+
+        if ($distance <= $distance_min) {
+            $tank_status = self::TANK_FULL;
+        } else if ($distance >= $distance_max) {
+            $tank_status = self::TANK_EMPTY;
         }
+//        switch ($distance)
+//        {
+//            case $distance <= $distance_min:
+//                $tank_status = self::TANK_FULL;
+//                break;
+//            case $distance >= $distance_max:
+//                $tank_status = self::TANK_EMPTY;
+//                break;
+//            default:
+//                $tank_status = 123;
+//                break;
+//        }
 
         if ($item->auto_status) {
             if ($item->water_status) {
                 switch ($tank_status) {
-                    case self::TANK_EMPTY:
+                    case self::TANK_EMPTY === 0:
                         $item->pump_status = self::PUMP_ON;
                         $item->save();
                         return response()->json(self::PUMP_ON, 200);
@@ -82,7 +91,6 @@ class ItemController extends Controller
                         return response()->json(self::PUMP_OFF, 200);
                         break;
                     default:
-
                         $item->pump_status = self::PUMP_OFF;
                         $item->save();
                         return response()->json(self::PUMP_OFF, 200);
