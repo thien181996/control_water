@@ -37,7 +37,7 @@ class ItemController extends Controller
     //   2    0     0
     public function storeItem(Request $request)
     {
-        $distance = $request->distance;
+        $distance = (int)$request->distance;
         $water_status = $request->water_status;
         $serial = $request->serial;
         $item = Item::where('serial', $serial)->first();
@@ -67,6 +67,7 @@ class ItemController extends Controller
                 $tank_status = self::TANK_EMPTY;
                 break;
         }
+
         if ($item->auto_status) {
             if ($item->water_status) {
                 switch ($tank_status) {
@@ -81,6 +82,7 @@ class ItemController extends Controller
                         return response()->json(self::PUMP_OFF, 200);
                         break;
                     default:
+
                         $item->pump_status = self::PUMP_OFF;
                         $item->save();
                         return response()->json(self::PUMP_OFF, 200);
