@@ -7,10 +7,8 @@ use Illuminate\Http\Request;
 
 class ItemController extends Controller
 {
-    public function getItem(Request $request)
+    public function getItem($serial)
     {
-        $serial = $request->serial;
-
         $item = Item::where('serial', $serial)->first();
         if ($item) {
             return response()->json(['status' => 'success', 'msg' => '', 'data' => $item]);

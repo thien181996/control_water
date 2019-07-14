@@ -17,6 +17,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/control', function (Request $request) {
-    return $request->all();
-});
+Route::get('/control/{serial}', 'ItemController@getItem');
