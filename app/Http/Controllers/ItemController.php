@@ -59,11 +59,22 @@ class ItemController extends Controller
         $distance_min = $item->distance_min;
         $tank_status = null;
 
-        if ($distance <= $distance_min) {
-            $tank_status = self::TANK_FULL;
-        } else if ($distance >= $distance_max) {
-            $tank_status = self::TANK_EMPTY;
+        if ($item->water_status && $distance >= $distance_max) {
+            $item->pump_status = self::PUMP_ON;
+            $item->save();
+            return response()->json(self::PUMP_ON, 200);
+        } else if ($distance <= $distance_min) {
+            $item->pump_status = self::PUMP_OFF;
+            $item->save();
+            return response()->json(self::PUMP_OFF, 200);
+        } else {
+            return response()->json($item->pump_status, 200);
         }
+//        if ($distance <= $distance_min) {
+//            $tank_status = self::TANK_FULL;
+//        } else if ($distance >= $distance_max) {
+//            $tank_status = self::TANK_EMPTY;
+//        }
 //        switch ($distance)
 //        {
 //            case $distance <= $distance_min:
@@ -76,44 +87,58 @@ class ItemController extends Controller
 //                $tank_status = 123;
 //                break;
 //        }
-
+dd($tank_status);
         if ($item->auto_status) {
-            if ($item->water_status) {
-                switch ($tank_status) {
-                    case self::TANK_EMPTY === 0:
-                        $item->pump_status = self::PUMP_ON;
-                        $item->save();
-                        return response()->json(self::PUMP_ON, 200);
-                        break;
-                    case self::TANK_FULL:
-                        $item->pump_status = self::PUMP_OFF;
-                        $item->save();
-                        return response()->json(self::PUMP_OFF, 200);
-                        break;
-                    default:
-                        $item->pump_status = self::PUMP_OFF;
-                        $item->save();
-                        return response()->json(self::PUMP_OFF, 200);
-                }
+//            if ($item->water_status) {
+//                if ($tank_status === self::TANK_EMPTY) {
+//                    $item->pump_status = self::PUMP_ON;
+//                    $item->save();
+//                    return response()->json(self::PUMP_ON, 200);
+//                } else if ($tank_status === self::TANK_FULL) {
+//                    $item->pump_status = self::PUMP_OFF;
+//                    $item->save();
+//                    return response()->json(self::PUMP_OFF, 200);
+//                } else {
+//                    $item->pump_status = self::PUMP_OFF;
+//                    $item->save();
+//                    return response()->json(self::PUMP_OFF, 200);
+//                }
+
+//                switch ($tank_status) {
+//                    case self::TANK_EMPTY === 0:
+//                        $item->pump_status = self::PUMP_ON;
+//                        $item->save();
+//                        return response()->json(self::PUMP_ON, 200);
+//                        break;
+//                    case self::TANK_FULL:
+//                        $item->pump_status = self::PUMP_OFF;
+//                        $item->save();
+//                        return response()->json(self::PUMP_OFF, 200);
+//                        break;
+//                    default:
+//                        $item->pump_status = self::PUMP_OFF;
+//                        $item->save();
+//                        return response()->json(self::PUMP_OFF, 200);
+//                }
             }
-        } else {
-            switch ($tank_status) {
-                case self::TANK_EMPTY:
-                    $item->pump_status = self::PUMP_ON;
-                    $item->save();
-                    return response()->json(self::PUMP_ON, 200);
-                    break;
-                case self::TANK_FULL:
-                    $item->pump_status = self::PUMP_OFF;
-                    $item->save();
-                    return response()->json(self::PUMP_OFF, 200);
-                    break;
-                default:
-                    $item->pump_status = self::PUMP_OFF;
-                    $item->save();
-                    return response()->json(self::PUMP_OFF, 200);
-            }
-        }
+//        } else {
+//            switch ($tank_status) {
+//                case self::TANK_EMPTY:
+//                    $item->pump_status = self::PUMP_ON;
+//                    $item->save();
+//                    return response()->json(self::PUMP_ON, 200);
+//                    break;
+//                case self::TANK_FULL:
+//                    $item->pump_status = self::PUMP_OFF;
+//                    $item->save();
+//                    return response()->json(self::PUMP_OFF, 200);
+//                    break;
+//                default:
+//                    $item->pump_status = self::PUMP_OFF;
+//                    $item->save();
+//                    return response()->json(self::PUMP_OFF, 200);
+//            }
+//        }
 
         return response()->json(0, 200);
     }
