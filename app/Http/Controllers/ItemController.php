@@ -60,9 +60,6 @@ class ItemController extends Controller
         $tank_status = null;
         switch ($distance)
         {
-            case $distance > $distance_min && $distance < $distance_max:
-                $tank_status = self::TANK_UNFULL;
-                break;
             case $distance <= $distance_min:
                 $tank_status = self::TANK_FULL;
                 break;
@@ -92,11 +89,6 @@ class ItemController extends Controller
         } else {
             switch ($tank_status) {
                 case self::TANK_EMPTY:
-                    $item->pump_status = self::PUMP_ON;
-                    $item->save();
-                    return response()->json(self::PUMP_ON, 200);
-                    break;
-                case self::TANK_UNFULL:
                     $item->pump_status = self::PUMP_ON;
                     $item->save();
                     return response()->json(self::PUMP_ON, 200);
