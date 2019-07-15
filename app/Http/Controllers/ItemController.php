@@ -73,7 +73,9 @@ class ItemController extends Controller
 
     public function saveItem(Request $request)
     {
+//        return $request->all();
         $pump_status = $request->pump_status;
+        $pump_status = $pump_status ? 1:0;
         $serial = $request->serial;
         $item = Item::where('serial', $serial)->first();
         if ($item) {
