@@ -58,7 +58,7 @@ class ItemController extends Controller
         $distance_min = $item->distance_min;
         $tank_status = null;
 
-        if ($item->water_status && $distance >= $distance_max) {
+        if ($item->water_status && $distance >= $distance_max && !$item->pump_status) {
             $item->pump_status = self::PUMP_ON;
             $item->save();
             return response()->json(self::PUMP_ON, 200);
