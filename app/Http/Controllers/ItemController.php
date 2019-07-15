@@ -84,6 +84,7 @@ class ItemController extends Controller
         $serial = $request->serial;
         $item = Item::where('serial', $serial)->first();
         if ($item) {
+            $item->auto_status = 0;
             $item->pump_status = $pump_status;
             $item->save();
 
