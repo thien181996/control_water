@@ -85,13 +85,17 @@ class ItemController extends Controller
     public function saveItem(Request $request)
     {
 //        return $request->all();
-        $pump_status = $request->pump_status;
-        $pump_status = $pump_status ? 1:0;
+        $pump_status = $request->pump_status ? 1:0;
+        $auto_status = $request->auto_status ? 1:0;
+        $distance_max = $request->distance_max;
+        $distance_min = $request->distance_min;
         $serial = $request->serial;
         $item = Item::where('serial', $serial)->first();
         if ($item) {
-            $item->auto_status = 0;
+            $item->auto_status = $auto_status;
             $item->pump_status = $pump_status;
+            $item->distance_max = $distance_max;
+            $item->distance_min = $distance_min;
             $item->save();
 
             return response()->json(1, 200);
