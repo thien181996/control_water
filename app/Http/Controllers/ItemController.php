@@ -6,6 +6,7 @@ use App\Events\ItemChanged;
 use App\Item;
 use Illuminate\Http\Request;
 use Pusher\Pusher;
+use ExponentPhpSDK;
 
 class ItemController extends Controller
 {
@@ -38,6 +39,7 @@ class ItemController extends Controller
     //   2    0     0
     public function storeItem(Request $request)
     {
+        $expo = ExponentPhpSDK\Expo::normalSetup();
         $distance = (int)$request->distance;
         $water_status = $request->water_status;
         $serial = $request->serial;
@@ -46,7 +48,6 @@ class ItemController extends Controller
             $item->distance = $distance;
             $item->water_status = $water_status;
             $item->save();
-//            dd($item);
         } else {
             $item = Item::create([
                 'distance_max' => 0,
@@ -56,34 +57,43 @@ class ItemController extends Controller
                 'serial' => $serial,
             ]);
         }
-//        $options = array(
-//            'cluster' => 'ap1',
-//            'useTLS' => true
-//        );
-//        $pusher = new Pusher('3881089ab33936ceff17', 'a01ddae5b926aee83aa3', '469490', $options);
-//        $pusher->trigger($item->serial, 'update', $item);
+
         event(new ItemChanged($item, $item->serial));
         $distance_max = $item->distance_max;
         $distance_min = $item->distance_min;
         $tank_status = null;
         if ($item->auto_status) {
             if ($item->water_status) {
+                $item->warning_status = 0;
                 if ($item->water_status && $distance >= $distance_max) {
                     $item->pump_status = self::PUMP_ON;
                     $item->save();
+                    $this->sendNotification($expo, $item->token, "Máy bơm đã được bật và đang bơm nước", "Chế độ: Tự động");
                     return response()->json(self::PUMP_ON, 200);
                 } else if ($distance <= $distance_min) {
                     $item->pump_status = self::PUMP_OFF;
                     $item->save();
+                    $this->sendNotification($expo, $item->token, "Đã đầy nước máy bơm đã được tắt", "Chế độ: Tự động");
                     return response()->json(self::PUMP_OFF, 200);
                 } else {
                     return response()->json($item->pump_status, 200);
                 }
             }
+            if ($item->warning_status) {
+                return response()->json(self::PUMP_OFF, 200);
+            } else {
+                $item->warning_status = 1;
+                $item->save();
+                $this->sendNotification($expo, $item->token, "Bể nguồn đã cạn nước", "Chế độ: Tự động");
+                return response()->json(self::PUMP_OFF, 200);
+            }
 
-            return response()->json(self::PUMP_OFF, 200);
         } else {
             if ($item->distance <= $distance_min) {
+                $this->sendNotification($expo, $item->token, "Đã đầy nước máy bơm đã được tắt", "Chế độ: Thủ công");
+                $item->auto_status = 1;
+                $item->pump_status = self::PUMP_OFF;
+                $item->save();
                 return response()->json(self::PUMP_OFF, 200);
             }
 
@@ -125,5 +135,13 @@ class ItemController extends Controller
             return response()->json(1, 200);
         }
         return response()->json(0, 200);
+    }
+
+    public function sendNotification($expo, $token, $body, $title)
+    {
+        $interestDetails = ['unique identifier', $token];
+        $expo->subscribe($interestDetails[0], $interestDetails[1]);
+        $notification = ['body' => $body,'title' => $title];
+        $expo->notify($interestDetails[0], $notification);
     }
 }
