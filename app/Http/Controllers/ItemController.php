@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ItemChanged;
 use App\Item;
 use Illuminate\Http\Request;
+use Pusher\Pusher;
 
 class ItemController extends Controller
 {
@@ -54,6 +56,13 @@ class ItemController extends Controller
                 'serial' => $serial,
             ]);
         }
+//        $options = array(
+//            'cluster' => 'ap1',
+//            'useTLS' => true
+//        );
+//        $pusher = new Pusher('3881089ab33936ceff17', 'a01ddae5b926aee83aa3', '469490', $options);
+//        $pusher->trigger($item->serial, 'update', $item);
+        event(new ItemChanged($item, $item->serial));
         $distance_max = $item->distance_max;
         $distance_min = $item->distance_min;
         $tank_status = null;
