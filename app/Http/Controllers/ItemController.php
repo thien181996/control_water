@@ -39,7 +39,7 @@ class ItemController extends Controller
     //   2    0     0
     public function storeItem(Request $request)
     {
-        $expo = ExponentPhpSDK\Expo::normalSetup();
+//        $expo = ExponentPhpSDK\Expo::normalSetup();
         $distance = (int)$request->distance;
         $water_status = $request->water_status;
         $serial = $request->serial;
@@ -68,12 +68,12 @@ class ItemController extends Controller
                 if ($item->water_status && $distance >= $distance_max) {
                     $item->pump_status = self::PUMP_ON;
                     $item->save();
-                    $this->sendNotification($expo, $item->token, "Máy bơm đã được bật và đang bơm nước", "Chế độ: Tự động");
+//                    $this->sendNotification($expo, $item->token, "Máy bơm đã được bật và đang bơm nước", "Chế độ: Tự động");
                     return response()->json(self::PUMP_ON, 200);
                 } else if ($distance <= $distance_min) {
                     $item->pump_status = self::PUMP_OFF;
                     $item->save();
-                    $this->sendNotification($expo, $item->token, "Đã đầy nước máy bơm đã được tắt", "Chế độ: Tự động");
+//                    $this->sendNotification($expo, $item->token, "Đã đầy nước máy bơm đã được tắt", "Chế độ: Tự động");
                     return response()->json(self::PUMP_OFF, 200);
                 } else {
                     return response()->json($item->pump_status, 200);
@@ -84,13 +84,13 @@ class ItemController extends Controller
             } else {
                 $item->warning_status = 1;
                 $item->save();
-                $this->sendNotification($expo, $item->token, "Bể nguồn đã cạn nước", "Cảnh báo");
+//                $this->sendNotification($expo, $item->token, "Bể nguồn đã cạn nước", "Cảnh báo");
                 return response()->json(self::PUMP_OFF, 200);
             }
 
         } else {
             if ($item->distance <= $distance_min) {
-                $this->sendNotification($expo, $item->token, "Đã đầy nước máy bơm đã được tắt và tự chuyển về chế độ tự động", "Chế độ: Thủ công");
+//                $this->sendNotification($expo, $item->token, "Đã đầy nước máy bơm đã được tắt và tự chuyển về chế độ tự động", "Chế độ: Thủ công");
                 $item->auto_status = 1;
                 $item->pump_status = self::PUMP_OFF;
                 $item->save();
