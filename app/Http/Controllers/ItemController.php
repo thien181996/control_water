@@ -58,7 +58,7 @@ class ItemController extends Controller
             ]);
         }
 
-        event(new ItemChanged($item, $item->serial));
+//        event(new ItemChanged($item, $item->serial));
         $distance_max = $item->distance_max;
         $distance_min = $item->distance_min;
         $tank_status = null;
