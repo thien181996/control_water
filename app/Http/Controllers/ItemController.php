@@ -112,4 +112,18 @@ class ItemController extends Controller
 
         return response()->json(0, 200);
     }
+
+    public function storeToken(Request $request)
+    {
+        $serial = $request->serial;
+        $token = $request->token;
+        $item = Item::where('serial', $serial)->first();
+        if ($item) {
+            $item->token = $token;
+            $item->save();
+
+            return response()->json(1, 200);
+        }
+        return response()->json(0, 200);
+    }
 }
