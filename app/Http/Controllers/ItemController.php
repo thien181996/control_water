@@ -84,13 +84,13 @@ class ItemController extends Controller
             } else {
                 $item->warning_status = 1;
                 $item->save();
-                $this->sendNotification($expo, $item->token, "Bể nguồn đã cạn nước", "Chế độ: Tự động");
+                $this->sendNotification($expo, $item->token, "Bể nguồn đã cạn nước", "Cảnh báo");
                 return response()->json(self::PUMP_OFF, 200);
             }
 
         } else {
             if ($item->distance <= $distance_min) {
-                $this->sendNotification($expo, $item->token, "Đã đầy nước máy bơm đã được tắt", "Chế độ: Thủ công");
+                $this->sendNotification($expo, $item->token, "Đã đầy nước máy bơm đã được tắt và tự chuyển về chế độ tự động", "Chế độ: Thủ công");
                 $item->auto_status = 1;
                 $item->pump_status = self::PUMP_OFF;
                 $item->save();
