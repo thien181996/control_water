@@ -20,7 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('/control/{serial}', 'ItemController@getItem');
 Route::get('/control/', 'ItemController@storeItem');
 Route::get('/test/', function() {
-    $interestDetails = ['unique identifier', 'ExponentPushToken[IMhSDAKhZuoH6zjxZ9fvMP]'];
+    $interestDetails = ['unique identifier', 'ExponentPushToken[wQHqMHNjPQecTRUaZLR5TY]'];
     $expo = \ExponentPhpSDK\Expo::normalSetup();
     $expo->subscribe($interestDetails[0], $interestDetails[1]);
     $notification = ['body' => 'quan stupod!','title' => 'thich the'];
